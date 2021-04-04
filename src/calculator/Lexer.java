@@ -19,21 +19,14 @@ public class Lexer {
         Token token = null;
         Matcher matcher;
 
-        // Look for end of input
         if (inputIndex >= input.length()) {
             return Token.END;
         }
 
-        // Create substring to be evaluated
         String temp = input.substring(inputIndex);
-        // Strip leading whitespace
         String start = temp.stripLeading();
-        // Calculate current index in input
         inputIndex += (temp.length() - start.length());
 
-        // Regex match on the start of the input
-        // If matched, add token to the list
-        // Look for an operator
         switch (start.charAt(0)) {
             case '=':
                 token = Token.EQUALS;
@@ -65,7 +58,6 @@ public class Lexer {
                 break;
         }
 
-        // Look for a number
         if (token == null) {
             matcher = numberPattern.matcher(start);
             if (matcher.find()) {
@@ -75,7 +67,6 @@ public class Lexer {
             }
         }
 
-        // Look for a variable
         if (token == null) {
             matcher = variablePattern.matcher(start);
             if (matcher.find()) {
@@ -85,7 +76,6 @@ public class Lexer {
             }
         }
 
-        // Else, throw error
         if (token == null) {
             throw new LexerException("Invalid expression", inputIndex + 1);
         }

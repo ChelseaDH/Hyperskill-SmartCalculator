@@ -12,10 +12,8 @@ public class Calculator {
         String inputLine;
 
         while (true) {
-            // Get user input
             inputLine = s.nextLine().strip();
 
-            // Look for a command
             if (inputLine.startsWith("/")) {
                 switch (inputLine) {
                     case "/exit":
@@ -31,16 +29,13 @@ public class Calculator {
                 continue;
             }
 
-            // Ignore empty input
             if (inputLine.isEmpty()) {
                 continue;
             }
 
             try {
-                // Create Lexer and parser
                 Parser parser = new Parser(new Lexer(inputLine));
 
-                // Print parser result
                 Optional<Double> result = parser.parse().evaluate(variables);
                 result.ifPresent(System.out::println);
             } catch (Exception e) {
