@@ -1,37 +1,59 @@
 package calculator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
 public class ParserTest {
-    public Map<String, Double> variables = new HashMap<>();
-
     @Test
-    public void plusAndMinusTest() throws Exception {
-        Parser p = new Parser(new Lexer("2 + 2"));
-        assertEquals(Optional.of(4.0), p.parse().evaluate(variables));
-
-        p = new Parser(new Lexer("5 + 6 - 10"));
-        assertEquals(Optional.of(1.0), p.parse().evaluate(variables));
-
-        p = new Parser(new Lexer("1 + 2 - 3 + 4 + 5.01 - 6"));
-        assertEquals(Optional.of(3.01), p.parse().evaluate(variables));
+    public void test_parsesUnaryNodesCorrectly() throws Exception {
+        Parser p = new Parser(new Lexer("-6"));
+        ASTNode expected = new UnaryNode(
+                Token.MINUS,
+                new ScalarNode(Token.number("6"), "6")
+        );
+        assertEquals(expected, p.parse());
     }
 
     @Test
-    public void multiplyAndDivideTest() throws Exception {
+    public void test_parsesAssignmentNodesCorrectly() throws Exception {
+        Parser p = new Parser(new Lexer("a = 3"));
+        ASTNode expected = new AssignmentNode(
+                Token.EQUALS,
+                new VariableNode(Token.variable("a")),
+                new ScalarNode(Token.number("3"), "3")
+        );
+        assertEquals(expected, p.parse());
+    }
+
+    @Test
+    public void test_parsesBinaryNodesCorrectly() throws Exception {
         Parser p = new Parser(new Lexer("2 * 6"));
-        assertEquals(Optional.of(12.0), p.parse().evaluate(variables));
+        ASTNode expected = new BinaryNode(
+                Token.MULTIPLY,
+                new ScalarNode(Token.number("2"), "2"),
+                new ScalarNode(Token.number("6"), "6")
+        );
+        assertEquals(expected, p.parse());
+    }
 
-        p = new Parser(new Lexer("5 + 6 * 10"));
-        assertEquals(Optional.of(65.0), p.parse().evaluate(variables));
+    @Test
+    public void test_parsesParenthesesCorrectly() throws Exception {
+        Parser p = new Parser(new Lexer("(1 + 3) * 10"));
+        ASTNode expected = new BinaryNode(
+                Token.MULTIPLY,
+                new BinaryNode(
+                        Token.PLUS,
+                        new ScalarNode(Token.number("1"), "1"),
+                        new ScalarNode(Token.number("3"), "3")
+                ),
+                new ScalarNode(Token.number("10"), "10")
+        );
+        assertEquals(expected, p.parse());
+    }
 
-        p = new Parser(new Lexer("5 + 6 * 10 + 80 / 10"));
-        assertEquals(Optional.of(73.0), p.parse().evaluate(variables));
+    @Test
+    public void test_throwsErrorIfParenthesesAreMismatched() {
+        Parser p = new Parser(new Lexer("(1 + 3 * 10"));
+        assertThrows(Exception.class, p::parse);
     }
 }

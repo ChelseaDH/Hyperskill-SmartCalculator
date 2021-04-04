@@ -1,6 +1,7 @@
 package calculator;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public abstract class ASTNode {
@@ -11,6 +12,19 @@ public abstract class ASTNode {
     }
 
     public abstract Optional<Double> evaluate(Map<String, Double> variables) throws Exception;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ASTNode astNode = (ASTNode) o;
+        return Objects.equals(token, astNode.token);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(token);
+    }
 }
 
 class ScalarNode extends ASTNode {
@@ -29,6 +43,19 @@ class ScalarNode extends ASTNode {
     @Override
     public Optional<Double> evaluate(Map<String, Double> variables) {
         return Optional.of(Double.parseDouble(value));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ScalarNode that = (ScalarNode) o;
+        return super.equals(o) && Objects.equals(value, that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
     }
 }
 
@@ -59,8 +86,21 @@ class UnaryNode extends ASTNode {
             case MINUS:
                 return Optional.of(-value.get());
             default:
-                throw new Exception("Invalid Expression");
+                throw new Exception("Invalid token type");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UnaryNode unaryNode = (UnaryNode) o;
+        return super.equals(o) && Objects.equals(expr, unaryNode.expr);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expr);
     }
 }
 
@@ -98,8 +138,21 @@ class BinaryNode extends ASTNode {
             case DIVIDE:
                 return Optional.of(value1.get() / value2.get());
             default:
-                throw new Exception("Invalid Expression");
+                throw new Exception("Invalid token type");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BinaryNode that = (BinaryNode) o;
+        return super.equals(o) && Objects.equals(expr1, that.expr1) && Objects.equals(expr2, that.expr2);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(expr1, expr2);
     }
 }
 
@@ -133,6 +186,19 @@ class AssignmentNode extends ASTNode {
 
         variables.put(identifier, value.get());
         return Optional.empty();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AssignmentNode that = (AssignmentNode) o;
+        return super.equals(o) && Objects.equals(variable, that.variable) && Objects.equals(expr, that.expr);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(variable, expr);
     }
 }
 
