@@ -28,34 +28,18 @@ public abstract class ASTNode {
 }
 
 class ScalarNode extends ASTNode {
-    String value;
-
-    public ScalarNode(Token token, String value) {
+    public ScalarNode(Token token) {
         super(token);
-        this.value = value;
     }
 
     @Override
     public String toString() {
-        return value;
+        return token.getValue();
     }
 
     @Override
     public Optional<Double> evaluate(Map<String, Double> variables) {
-        return Optional.of(Double.parseDouble(value));
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ScalarNode that = (ScalarNode) o;
-        return super.equals(o) && Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
+        return Optional.of(Double.parseDouble(token.getValue()));
     }
 }
 

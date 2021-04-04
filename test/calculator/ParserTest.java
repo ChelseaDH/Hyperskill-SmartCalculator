@@ -9,7 +9,7 @@ public class ParserTest {
         Parser p = new Parser(new Lexer("-6"));
         ASTNode expected = new UnaryNode(
                 Token.MINUS,
-                new ScalarNode(Token.number("6"), "6")
+                new ScalarNode(Token.number("6"))
         );
         assertEquals(expected, p.parse());
     }
@@ -20,7 +20,7 @@ public class ParserTest {
         ASTNode expected = new AssignmentNode(
                 Token.EQUALS,
                 new VariableNode(Token.variable("a")),
-                new ScalarNode(Token.number("3"), "3")
+                new ScalarNode(Token.number("3"))
         );
         assertEquals(expected, p.parse());
     }
@@ -30,8 +30,8 @@ public class ParserTest {
         Parser p = new Parser(new Lexer("2 * 6"));
         ASTNode expected = new BinaryNode(
                 Token.MULTIPLY,
-                new ScalarNode(Token.number("2"), "2"),
-                new ScalarNode(Token.number("6"), "6")
+                new ScalarNode(Token.number("2")),
+                new ScalarNode(Token.number("6"))
         );
         assertEquals(expected, p.parse());
     }
@@ -43,10 +43,10 @@ public class ParserTest {
                 Token.MULTIPLY,
                 new BinaryNode(
                         Token.PLUS,
-                        new ScalarNode(Token.number("1"), "1"),
-                        new ScalarNode(Token.number("3"), "3")
+                        new ScalarNode(Token.number("1")),
+                        new ScalarNode(Token.number("3"))
                 ),
-                new ScalarNode(Token.number("10"), "10")
+                new ScalarNode(Token.number("10"))
         );
         assertEquals(expected, p.parse());
     }

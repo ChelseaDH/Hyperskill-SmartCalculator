@@ -48,7 +48,7 @@ public class Parser {
         if (current.isLeftParenthesis()) {
             return parseParenthesizedExpression();
         } else if (current.isScalar()) {
-            return new ScalarNode(current, current.getValue());
+            return new ScalarNode(current);
         } else if (current.isVariable()) {
             return new VariableNode(current);
         }

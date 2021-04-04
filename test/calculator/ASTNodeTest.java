@@ -10,7 +10,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ASTNodeTest {
-    ScalarNode scalarNode = new ScalarNode(Token.number("2"), "2");
+    ScalarNode scalarNode = new ScalarNode(Token.number("2"));
     VariableNode variableNode = new VariableNode(Token.variable("a"));
 
     @Test
