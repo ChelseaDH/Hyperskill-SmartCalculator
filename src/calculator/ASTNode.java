@@ -104,49 +104,34 @@ class BinaryNode extends ASTNode {
 }
 
 class AssignmentNode extends ASTNode {
-    public AssignmentNode (Token token) {
+    ASTNode variable;
+    ASTNode expr;
+
+    public AssignmentNode(Token token, ASTNode variable, ASTNode expr) {
         super(token);
+        this.variable = variable;
+        this.expr = expr;
     }
 
     @Override
     public String toString() {
-        return token.getValue();
+        return String.format("%s %s %s", variable.toString(), token.getType().toString(), expr.toString());
     }
 
     @Override
     public Optional<Double> evaluate(Map<String, Double> variables) throws Exception {
-        String[] parts = token.getValue().split("=");
-        String identifier;
-        String assignee;
-        double value;
-
-        if (parts.length != 2) {
-            throw new Exception("Invalid assignment");
-        }
-
-        identifier = parts[0].strip();
-        assignee = parts[1].strip();
-
-        if (!identifier.matches("^[a-zA-Z]+")) {
+        if (!(this.variable instanceof VariableNode)) {
             throw new Exception("Invalid identifier");
         }
 
-        if (assignee.matches("^\\d+([.,]\\d+)?")) {
-            value = Double.parseDouble(assignee);
-        } else if (assignee.matches("^[a-zA-Z]+")) {
-            Double variable = variables.get(assignee);
+        String identifier = this.variable.toString();
+        Optional<Double> value = this.expr.evaluate(variables);
 
-            if (variable == null) {
-                throw new Exception("Unknown variable");
-            } else {
-                value = variable;
-            }
-        } else {
+        if (value.isEmpty()) {
             throw new Exception("Invalid assignment");
         }
 
-        variables.put(identifier, value);
-
+        variables.put(identifier, value.get());
         return Optional.empty();
     }
 }

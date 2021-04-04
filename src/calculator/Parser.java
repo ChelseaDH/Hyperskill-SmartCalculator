@@ -18,23 +18,23 @@ public class Parser {
         current = next;
         next = lexer.next();
 
-        if (current.isAssignment()) {
-            return new AssignmentNode(current);
-        }
-
-        ASTNode left = this.parseTerm();
-        if (next.isRightParenthesis()) {
-            current = next;
-            next = lexer.next();
-            return left;
-        }
+        ASTNode left;
 
         if (current.isUnary()) {
             left = new UnaryNode(current, this.expr(Integer.MAX_VALUE));
+        } else {
+            left = this.parseTerm();
+        }
+
+        if (next.getType() == Token.Type.EQUALS) {
+            current = next;
+            next = lexer.next();
+
+            left = new AssignmentNode(current, left, expr(0));
         }
 
         // Left binding power
-        while (rbp < next.getType().getPrecedence()) {
+        while (rbp < next.getType().getPrecedence() && !next.isRightParenthesis()) {
             current = next;
             next = lexer.next();
 
@@ -58,9 +58,12 @@ public class Parser {
 
     private ASTNode parseParenthesizedExpression() throws Exception {
         ASTNode node = this.expr(next.getType().getPrecedence());
-        if (!current.isRightParenthesis() && next.isEnd()) {
+        if (!next.isRightParenthesis()) {
             throw new Exception("Mismatched parenthesis");
         }
+
+        current = next;
+        next = lexer.next();
         return node;
     }
 }

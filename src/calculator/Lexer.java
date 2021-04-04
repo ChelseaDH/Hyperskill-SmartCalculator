@@ -5,7 +5,6 @@ import java.util.regex.Pattern;
 
 public class Lexer {
     public static Pattern numberPattern = Pattern.compile("^\\d+([.,]\\d+)?");
-    public static Pattern assignmentPattern = Pattern.compile("^.*\\s*=\\s*.*");
     public static Pattern variablePattern = Pattern.compile("^[a-zA-Z]+");
 
     private final String input;
@@ -36,6 +35,10 @@ public class Lexer {
         // If matched, add token to the list
         // Look for an operator
         switch (start.charAt(0)) {
+            case '=':
+                token = Token.EQUALS;
+                inputIndex++;
+                break;
             case '+':
                 token = Token.PLUS;
                 inputIndex++;
@@ -69,15 +72,6 @@ public class Lexer {
                 String group = matcher.group();
                 token = Token.number(group);
                 inputIndex += group.length();
-            }
-        }
-
-        // Look for an assignment
-        if (token == null) {
-            matcher = assignmentPattern.matcher(start);
-            if (matcher.find()) {
-                token = Token.assignment(start);
-                inputIndex += start.length();
             }
         }
 

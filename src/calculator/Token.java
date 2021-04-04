@@ -5,6 +5,7 @@ import java.util.Objects;
 public class Token {
 
     public static final Token END = new Token(Type.END);
+    public static final Token EQUALS = new Token(Type.EQUALS);
     public static final Token PLUS = new Token(Type.PLUS);
     public static final Token MINUS = new Token(Type.MINUS);
     public static final Token MULTIPLY = new Token(Type.MULTIPLY);
@@ -21,12 +22,6 @@ public class Token {
 
     public static Token number(String value) {
         Token t = new Token(Type.NUMBER);
-        t.value = value;
-        return t;
-    }
-
-    public static Token assignment(String value) {
-        Token t = new Token(Type.ASSIGNMENT);
         t.value = value;
         return t;
     }
@@ -59,7 +54,6 @@ public class Token {
         }
     }
 
-    public boolean isAssignment() { return this.type == Type.ASSIGNMENT; }
     public boolean isVariable() { return this.type == Type.VARIABLE; }
     public boolean isLeftParenthesis() {return this.type == Type.LEFT_PARENTHESES; }
     public boolean isRightParenthesis() {return this.type == Type.RIGHT_PARENTHESES; }
@@ -88,6 +82,7 @@ public class Token {
 
     public enum Type {
         END(0, false),
+        EQUALS(0, false),
         NUMBER(1, true),
         VARIABLE(1, true),
         PLUS(2, true),
@@ -95,8 +90,7 @@ public class Token {
         MULTIPLY(3, true),
         DIVIDE(3, true),
         LEFT_PARENTHESES(4, true),
-        RIGHT_PARENTHESES(4, true),
-        ASSIGNMENT(0,false);
+        RIGHT_PARENTHESES(4, true);
 
         private final int precedence;
         private final boolean leftAssoc;
