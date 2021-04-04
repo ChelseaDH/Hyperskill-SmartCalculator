@@ -57,7 +57,6 @@ public class Token {
     public boolean isVariable() { return this.type == Type.VARIABLE; }
     public boolean isLeftParenthesis() {return this.type == Type.LEFT_PARENTHESES; }
     public boolean isRightParenthesis() {return this.type == Type.RIGHT_PARENTHESES; }
-    public boolean isEnd() {return this.type == Type.END; }
 
     @Override
     public String toString() {
@@ -81,31 +80,25 @@ public class Token {
     }
 
     public enum Type {
-        END(0, false),
-        EQUALS(0, false),
-        NUMBER(1, true),
-        VARIABLE(1, true),
-        PLUS(2, true),
-        MINUS(2, true),
-        MULTIPLY(3, true),
-        DIVIDE(3, true),
-        LEFT_PARENTHESES(4, true),
-        RIGHT_PARENTHESES(4, true);
+        END(0),
+        EQUALS(0),
+        NUMBER(1),
+        VARIABLE(1),
+        PLUS(2),
+        MINUS(2),
+        MULTIPLY(3),
+        DIVIDE(3),
+        LEFT_PARENTHESES(4),
+        RIGHT_PARENTHESES(4);
 
         private final int precedence;
-        private final boolean leftAssoc;
 
-        Type(int precedence, boolean leftAssoc) {
+        Type(int precedence) {
             this.precedence = precedence;
-            this.leftAssoc = leftAssoc;
         }
 
         public int getPrecedence() {
             return precedence;
-        }
-
-        public boolean isLeftAssoc() {
-            return leftAssoc;
         }
     }
 }
