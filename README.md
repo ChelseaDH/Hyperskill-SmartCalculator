@@ -24,5 +24,5 @@ This was written as a learning exercise following the below JetBrains Academy ta
 
 > TASK: JetBrains Academy | Java Developer | (https://hyperskill.org/projects/42?track=1)
 
-Task status: In progress
+Task status: Complete
 
