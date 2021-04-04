@@ -23,11 +23,11 @@ public class Lexer {
             return Token.END;
         }
 
-        String temp = input.substring(inputIndex);
-        String start = temp.stripLeading();
-        inputIndex += (temp.length() - start.length());
+        String remainingInput = input.substring(inputIndex);
+        String stripped = remainingInput.stripLeading();
+        inputIndex += (remainingInput.length() - stripped.length());
 
-        switch (start.charAt(0)) {
+        switch (stripped.charAt(0)) {
             case '=':
                 token = Token.EQUALS;
                 inputIndex++;
@@ -59,7 +59,7 @@ public class Lexer {
         }
 
         if (token == null) {
-            matcher = numberPattern.matcher(start);
+            matcher = numberPattern.matcher(stripped);
             if (matcher.find()) {
                 String group = matcher.group();
                 token = Token.number(group);
@@ -68,7 +68,7 @@ public class Lexer {
         }
 
         if (token == null) {
-            matcher = variablePattern.matcher(start);
+            matcher = variablePattern.matcher(stripped);
             if (matcher.find()) {
                 String group = matcher.group();
                 token = Token.variable(group);
