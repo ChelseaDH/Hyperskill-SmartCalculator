@@ -1,8 +1,12 @@
 package calculator;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class Calculator {
+    public Map<String, Double> variables = new HashMap<>();
 
     public void run(Scanner s) {
         String inputLine;
@@ -37,9 +41,10 @@ public class Calculator {
                 Parser parser = new Parser(new Lexer(inputLine));
 
                 // Print parser result
-                System.out.println(parser.parse().evaluate());
+                Optional<Double> result = parser.parse().evaluate(variables);
+                result.ifPresent(System.out::println);
             } catch (Exception e) {
-                System.out.println("Invalid expression");
+                System.out.println(e.getMessage());
             }
         }
     }

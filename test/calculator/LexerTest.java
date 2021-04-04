@@ -37,9 +37,9 @@ public class LexerTest {
 
     @Test
     public void invalidInput() throws LexerException {
-        assertThrows(LexerException.class, () -> new Lexer("invalid").next());
+        assertThrows(LexerException.class, () -> new Lexer("____").next());
 
-        Lexer testLexer = new Lexer("2 + two");
+        Lexer testLexer = new Lexer("2 + __");
 
         assertEquals(Token.number("2"), testLexer.next());
         assertEquals(Token.PLUS, testLexer.next());

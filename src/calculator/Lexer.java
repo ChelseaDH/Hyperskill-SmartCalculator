@@ -5,6 +5,8 @@ import java.util.regex.Pattern;
 
 public class Lexer {
     public static Pattern numberPattern = Pattern.compile("^\\d+([.,]\\d+)?");
+    public static Pattern assignmentPattern = Pattern.compile("^.*\\s*=\\s*.*");
+    public static Pattern variablePattern = Pattern.compile("^[a-zA-Z]+");
 
     private final String input;
     private int inputIndex;
@@ -16,6 +18,7 @@ public class Lexer {
 
     public Token next() throws LexerException {
         Token token = null;
+        Matcher matcher;
 
         // Look for end of input
         if (inputIndex >= input.length()) {
@@ -49,14 +52,41 @@ public class Lexer {
                 token = Token.DIVIDE;
                 inputIndex++;
                 break;
+            case '(':
+                token = Token.LEFT_PARENTHESES;
+                inputIndex++;
+                break;
+            case ')':
+                token = Token.RIGHT_PARENTHESES;
+                inputIndex++;
+                break;
         }
 
-        // If operator not assigned, look for a number
+        // Look for a number
         if (token == null) {
-            Matcher matcher = numberPattern.matcher(start);
+            matcher = numberPattern.matcher(start);
             if (matcher.find()) {
                 String group = matcher.group();
                 token = Token.number(group);
+                inputIndex += group.length();
+            }
+        }
+
+        // Look for an assignment
+        if (token == null) {
+            matcher = assignmentPattern.matcher(start);
+            if (matcher.find()) {
+                token = Token.assignment(start);
+                inputIndex += start.length();
+            }
+        }
+
+        // Look for a variable
+        if (token == null) {
+            matcher = variablePattern.matcher(start);
+            if (matcher.find()) {
+                String group = matcher.group();
+                token = Token.variable(group);
                 inputIndex += group.length();
             }
         }
@@ -69,4 +99,3 @@ public class Lexer {
         return token;
     }
 }
-

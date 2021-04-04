@@ -2,32 +2,33 @@ package calculator;
 
 public class Parser {
     Lexer lexer;
+    Token current;
     Token next;
 
     public Parser(Lexer lexer) {
         this.lexer = lexer;
     }
 
-    // Parse tokens into an AST
     public ASTNode parse() throws Exception {
         next = this.lexer.next();
         return this.expr(0);
     }
 
-    // Create the AST
-    private ASTNode expr(int rbp) throws LexerException {
-        Token current = next;
+    private ASTNode expr(int rbp) throws Exception {
+        current = next;
         next = lexer.next();
 
-        // Left node
-        ASTNode left = null;
-
-        // Create scalar node
-        if (current.isScalar()) {
-            left = new ScalarNode(current, current.getValue());
+        if (current.isAssignment()) {
+            return new AssignmentNode(current);
         }
 
-        // Create Unary node
+        ASTNode left = this.parseTerm();
+        if (next.isRightParenthesis()) {
+            current = next;
+            next = lexer.next();
+            return left;
+        }
+
         if (current.isUnary()) {
             left = new UnaryNode(current, this.expr(Integer.MAX_VALUE));
         }
@@ -42,5 +43,24 @@ public class Parser {
 
         return left;
     }
-}
 
+    private ASTNode parseTerm() throws Exception {
+        if (current.isLeftParenthesis()) {
+            return parseParenthesizedExpression();
+        } else if (current.isScalar()) {
+            return new ScalarNode(current, current.getValue());
+        } else if (current.isVariable()) {
+            return new VariableNode(current);
+        }
+
+        throw new Exception("Invalid Expression");
+    }
+
+    private ASTNode parseParenthesizedExpression() throws Exception {
+        ASTNode node = this.expr(next.getType().getPrecedence());
+        if (!current.isRightParenthesis() && next.isEnd()) {
+            throw new Exception("Mismatched parenthesis");
+        }
+        return node;
+    }
+}

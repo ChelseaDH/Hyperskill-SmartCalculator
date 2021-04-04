@@ -1,11 +1,18 @@
 # Smart Calculator
 
-A terminal-based interactive calculator which performs basic arithmetic. 
+A terminal-based interactive calculator which supports the following:
+- Basic arithmetic: addition, subtraction, multiplication and division,
+- The use of parentheses,
+- Variables.
 
 ### Example
 ```
-2 * 10 - 7
+a = 2
+b = 10
+a * b - 7
 13.0
+a * (b - 7)
+6.0
 6 + 370 / 85 - 8
 2.352941176470587
 /exit
